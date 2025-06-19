@@ -4,13 +4,25 @@ import java.util.Arrays;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        int arr[] = {5,6,7,8,1,2,3,};
+        int arr[] = {1,2,3,4,5,6,7,8,9,10};
         int n = arr.length;
-        System.out.println(searchInRotatedArray(arr,n,22));
-//        System.out.println( Math.ceil());
+        System.out.println(minCapacityToLoadWithinDays(arr,n,5));
     }
 
+    // finds Minimum from array
+    // O(N)
+    public static int findMin(int[] arr) {
+        int min = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if (min > arr[i]) {
+                min = arr[i];
+            }
+        }
+        return min;
+    }
 
+    // finds Maximum from array
+    // O(N)
     public static int findMax(int arr[],int n){
         int max = arr[0];
         for(int i=1;i<n;i++){
@@ -19,6 +31,15 @@ public class Main {
             }
         }
         return max;
+    }
+
+    // O(N)
+    public static int findSum(int arr[],int n){
+        int sum = 0;
+        for(int i=0;i<n;i++){
+            sum += arr[i];
+        }
+        return sum;
     }
 
     // finds lower bound
@@ -234,5 +255,38 @@ public class Main {
         }
 
         return -1; // if target is not found
+    }
+
+    //  O(n * log S)
+    // n = size of array, S = sum of array elements
+    public static int minCapacityToLoadWithinDays(int[] arr, int n,int days) {
+        int low = findMax(arr,n);
+        int high = findSum(arr,n);
+
+        while(low<=high){
+            int mid = low + (high - low) / 2;
+            if(calDays(arr,n,mid)<=days){
+
+                high = mid - 1;
+            }else{
+                low = mid + 1;
+
+            }
+        }
+        return low;
+    }
+
+    public static int calDays(int arr[],int n,int cap) {
+        int day = 1;
+        int load = 0;
+        for(int i=0;i<n;i++){
+            if(arr[i] + load > cap ){
+                day++;
+                load = arr[i];
+            }else{
+                load = arr[i] + load;
+            }
+        }
+        return day;
     }
 }
