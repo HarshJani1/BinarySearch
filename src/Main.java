@@ -4,11 +4,22 @@ import java.util.Arrays;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        int arr[] = {1,10,2,1};
+        int arr[] = {5,6,7,8,1,2,3,};
         int n = arr.length;
-        System.out.println(findPeakElement(arr,n));
+        System.out.println(searchInRotatedArray(arr,n,22));
+//        System.out.println( Math.ceil());
     }
 
+
+    public static int findMax(int arr[],int n){
+        int max = arr[0];
+        for(int i=1;i<n;i++){
+            if(arr[i]>max){
+                max = arr[i];
+            }
+        }
+        return max;
+    }
 
     // finds lower bound
     // smallest element >= target
@@ -163,5 +174,65 @@ public class Main {
             }
         }
         return -1;
+    }
+
+    //o(N + LogN)
+    public static int findTheSmallestDivisorGivenaThreshold(int arr[], int n, int threshold) {
+        int max = findMax(arr, n);
+        int low = 1, high = max;
+        int ans = -1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (isThreshold(arr, n, threshold, mid)) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+
+
+    public static boolean isThreshold(int arr[], int n, int threshold, int div) {
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += (arr[i] + div - 1) / div; // equivalent to Math.ceil
+        }
+        return sum <= threshold;
+    }
+
+
+    // Searches a target in rotated array
+    // O(LogN)
+    public static int searchInRotatedArray(int arr[],int n,int target) {
+        int low = 0;
+        int high = n - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] == target) {return mid;}
+
+            // cheks if left half is sorted
+            if(arr[mid] < arr[high]){
+                // cheks if target is in left half
+                if(arr[mid] <= target && target <= arr[high]){
+                    low = mid + 1;
+                }else{
+                    high = mid - 1;
+                }
+            }else{
+
+                // checks if target is in right half
+                if(arr[low] <= target && target <= arr[mid]){
+                    high = mid - 1;
+                }else{
+                    low = mid + 1;
+                }
+            }
+        }
+
+        return -1; // if target is not found
     }
 }
